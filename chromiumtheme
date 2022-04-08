@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo -e "No theme provided!\nOptions: dark, light"
+else
+  if [ "$1" == "dark" ]; then
+    #Enable dark mode
+    if [ -f "/etc/chromium.d/darkmode" ]; then
+      echo -e "Darkmode already enabled!"
+    else
+      echo "Enabling darkmode"
+      sudo rm -rf /etc/chromium.d/lightmode
+      echo "# Darkmode" | sudo tee -a /etc/chromium.d/darkmode &>/dev/null
+      echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --dark --force-dark-mode"' | sudo tee -a /etc/chromium.d/darkmode &>/dev/null
+      echo "Close any open instances of chromium"
+    fi
+  elif [ "$1" == "light" ]; then
+    #Enable light mode
+    if [ -f "/etc/chromium.d/lightmode" ]; then
+      echo -e "lightmode already enabled!"
+    else
+      echo "Enabling lightmode"
+      sudo rm -rf /etc/chromium.d/darkmode
+      echo "# Chromium is usually light mode by default" | sudo tee -a /etc/chromium.d/lightmode &>/dev/null
+      echo "# Lightmode" | sudo tee -a /etc/chromium.d/lightmode &>/dev/null
+      echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --light --force-light-mode"' | sudo tee -a /etc/chromium.d/lightmode &>/dev/null
+      echo "Close any open instances of chromium"
+    fi
+  else
+    echo -e "Unkown option: '$1'\nOptions: dark, light"
+  fi
+fi
